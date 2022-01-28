@@ -1,11 +1,28 @@
 import { Box, Text, TextField, Image, Button } from "@skynexui/components";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import React from "react";
 import appConfig from "../config.json";
+
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQwMzI2MywiZXhwIjoxOTU4OTc5MjYzfQ.kJYHkP1ed0Ch9uVBJUPhl5-7_Af2paDc6GliXs_8FTA';
+const SUPABASE_URL = 'https://plgtaijhmoubehjueguh.supabase.co';
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
     const [mensagem, setMensagem] = React.useState('');
     const [listaDeMensagens, setListaDeMensagens] = React.useState([]);
-   /*
+    
+    React.useEffect(() => {
+      supabaseClient
+        .from('mensagens')
+        .select('*')
+        .order('id', { ascending: false })
+        .then(({ data }) => {
+          console.log('Dados da consulta:', data);
+          setListaDeMensagens(data);
+        });
+    }, []);
+        
+    /*
     // Usuário
     - Usuário digita no campo textarea
     - Aperta enter para enviar
@@ -18,16 +35,29 @@ export default function ChatPage() {
     */
     function handleNovaMensagem(novaMensagem) {
         const mensagem = {
-            id: listaDeMensagens.length + 1,
+            //id: listaDeMensagens.length + 1,
             de: 'vanessametonini',
             texto: novaMensagem,
         };
+
+        supabaseClient
+      .from('mensagens')
+      .insert([
+        //Tem que ser um objeto com os mesmos campos que vc escreveu no supabase
+        mensagem
+      ])
+      .then(({data}) => {
+        console.log('Criando mensagem:' , data);
         setListaDeMensagens([
-            mensagem,
-            ...listaDeMensagens,
+          data[0],
+        ...listaDeMensagens,
         ]);
-        setMensagem('');
+      });
+
+      setMensagem('');
+
     }
+    
   
     return (
     <Box
@@ -36,7 +66,7 @@ export default function ChatPage() {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: appConfig.theme.colors.primary[500],
-        backgroundImage: `url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)`,
+        backgroundImage: `url(https://https://virtualbackgrounds.site/pt/background/ati-dubai-office-meeting-room/.jpg)`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundBlendMode: "multiply",
@@ -182,7 +212,7 @@ function MessageList(props) {
                   display: "inline-block",
                   marginRight: "8px",
                 }}
-                src={`https://github.com/vanessametonini.png`}
+                src={`https://github.com/${mensagem.de}.png`}
               />
               <Text tag="strong">{mensagem.de}</Text>
               <Text
