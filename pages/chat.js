@@ -21,8 +21,6 @@ function escutaMensagensEmTempoReal(adicionaMensagem) {
 export default function ChatPage() {
   const roteamento = useRouter();
   const usuarioLogado = roteamento.query.username;
-  console.log("roteamento.query", roteamento.query);
-  console.log("usuarioLogado", usuarioLogado);
   const [mensagem, setMensagem] = React.useState("");
   const [listaDeMensagens, setListaDeMensagens] = React.useState([
     /*{
@@ -34,11 +32,11 @@ export default function ChatPage() {
 
   React.useEffect(() => {
     supabaseClient
-      .from("mensagens")
-      .select("*")
-      .order("id", { ascending: false })
+      .from('mensagens')
+      .select('*')
+      .order('id', { ascending: false })
       .then(({ data }) => {
-        //console.log('Dados da consulta:', data);
+        console.log('Dados da consulta:', data);
         setListaDeMensagens(data);
       });
 
@@ -91,7 +89,7 @@ export default function ChatPage() {
       ])
       .then(({ data }) => {
         console.log("Criando mensagem:", data);
-        setListaDeMensagens([data[0], ...listaDeMensagens]);
+       
       });
 
     setMensagem("");
@@ -268,7 +266,7 @@ function MessageList(props) {
                 {new Date().toLocaleDateString()}
               </Text>
             </Box>
-            {mensagem.texto}
+            
             {/* [Declarativo] */}
             {/* Condicional: {mensagem.texto.startsWith(':sticker:').toString()} */}
             {mensagem.texto.startsWith(':sticker:')
